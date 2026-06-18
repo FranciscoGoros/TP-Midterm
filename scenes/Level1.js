@@ -101,7 +101,7 @@ export default class Level1 extends Phaser.Scene {
       }
     });
 
-    this.physics.add.collider(
+    this.physics.add.overlap(
       this.player,
       this.enemigosGroup,
       this.enemycollide,
@@ -118,12 +118,10 @@ export default class Level1 extends Phaser.Scene {
       this
     );
 
-    // No entiendo por qué no puedo poner esto junto al otro collider pero ok
-
     this.physics.add.collider(
       this.player,
-      this.ruby,
-      this.collectruby,
+      this.NPC3,
+      this.pushnpc3,
       null,
       this
     );
@@ -131,8 +129,8 @@ export default class Level1 extends Phaser.Scene {
 
     this.physics.add.collider(
       this.player,
-      this.gold,
-      this.collectgold,
+      this.NPC2,
+      this.pushnpc2,
       null,
       this
     );
@@ -163,19 +161,19 @@ export default class Level1 extends Phaser.Scene {
     
   }
 
-  collectgold(player, gold) {
-    gold.disableBody(true, true);
-    this.inventario.items.push("gold");
+  pushnpc1(player, NPC1) {
+    NPC1.disableBody(true, true);
+    this.inventario.items.push("NPC1");
     console.log(this.inventario.items);
-    this.score += 20;
+    this.score += 10;
     this.Interfaz.setText(`Objetos: ${this.inventario.items.length}`);
     this.Puntos.setText(`Puntos: ${this.score}`);
   }
 
 
-  collectruby(player, ruby) {
-    ruby.disableBody(true, true);
-    this.inventario.items.push("ruby");
+  pushnpc3(player, NPC3) {
+    NPC3.disableBody(true, true);
+    this.inventario.items.push("NPC3");
     console.log(this.inventario.items);
     this.Interfaz.setText(`Objetos: ${this.inventario.items.length}`);
     this.score += 30;
@@ -183,9 +181,9 @@ export default class Level1 extends Phaser.Scene {
   }
 
 
-  collectStar(player, star) {
-    star.disableBody(true, true);
-    this.inventario.items.push("star");
+  pushnpc2(player, NPC2) {
+    NPC2.disableBody(true, true);
+    this.inventario.items.push("NPC2");
     console.log(this.inventario.items);
     this.Interfaz.setText(`Objetos: ${this.inventario.items.length}`);
     this.score += 10;
@@ -199,8 +197,8 @@ export default class Level1 extends Phaser.Scene {
     }
   }
 
-  enemycollide(player, enemigo) {
+  enemycollide(player, enemy) {
     this.player.vida -= 1;
-    enemigo.disableBody(true, true);
+    enemy.disableBody(true, true);
   }
 }
