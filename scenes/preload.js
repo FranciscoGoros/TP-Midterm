@@ -1,3 +1,6 @@
+
+import Menu from "./menu.js";
+
 const Phaser = window.Phaser;
 
 export default class Preloader extends Phaser.Scene {
@@ -25,6 +28,6 @@ export default class Preloader extends Phaser.Scene {
   }
 
   create() {
-    this.scene.start("GameOverScene");
+    this.scene.start("Menu");
   }
 }

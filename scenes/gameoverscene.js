@@ -6,6 +6,7 @@ export default class gameoverscene extends Phaser.Scene {
   init(data) {
     this.savedPeopleTotal = data?.savedPeopleTotal || 0;
     this.pointsTotal = data?.points || data?.score || 0;
+    this.currentLevel = data?.currentLevel || "Level1";
   }
 
   create() {
@@ -30,19 +31,43 @@ export default class gameoverscene extends Phaser.Scene {
       fill: "#ffffff",
     }).setOrigin(0.5);
 
-    const buttonBackground = this.add.rectangle(centerX, centerY + 120, 320, 100, 0x004488).setOrigin(0.5);
-    const buttonText = this.add.text(centerX, centerY + 120, "VOLVER AL MENÚ", {
+    const restartBackground = this.add.rectangle(centerX, centerY + 100, 320, 100, 0x004488).setOrigin(0.5);
+    const restartText = this.add.text(centerX, centerY + 100, "REINICIAR NIVEL", {
       fontSize: "28px",
       fontFamily: "sans-serif",
       fill: "#ffffff",
     }).setOrigin(0.5);
 
-    buttonBackground.setInteractive({ useHandCursor: true });
-    buttonBackground.on("pointerdown", () => {
+    const menuBackground = this.add.rectangle(centerX, centerY + 220, 320, 100, 0x004488).setOrigin(0.5);
+    const menuText = this.add.text(centerX, centerY + 220, "VOLVER AL MENÚ", {
+      fontSize: "28px",
+      fontFamily: "sans-serif",
+      fill: "#ffffff",
+    }).setOrigin(0.5);
+
+    restartBackground.setInteractive({ useHandCursor: true });
+    restartBackground.on("pointerdown", () => {
+      this.scene.start(this.currentLevel, {
+        score: this.pointsTotal,
+        points: this.pointsTotal,
+        savedPeopleTotal: this.savedPeopleTotal,
+      });
+    });
+    restartText.setInteractive({ useHandCursor: true });
+    restartText.on("pointerdown", () => {
+      this.scene.start(this.currentLevel, {
+        score: this.pointsTotal,
+        points: this.pointsTotal,
+        savedPeopleTotal: this.savedPeopleTotal,
+      });
+    });
+
+    menuBackground.setInteractive({ useHandCursor: true });
+    menuBackground.on("pointerdown", () => {
       this.scene.start("Menu");
     });
-    buttonText.setInteractive({ useHandCursor: true });
-    buttonText.on("pointerdown", () => {
+    menuText.setInteractive({ useHandCursor: true });
+    menuText.on("pointerdown", () => {
       this.scene.start("Menu");
     });
   }

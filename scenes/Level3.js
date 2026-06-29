@@ -13,10 +13,11 @@ export default class Level3 extends NivelBase {
     if (this.inventario.items.length >= 5) {
       door.disableBody(true, true); 
       this.registry.set('score', this.score);
-      this.scene.start("GameOverScene", {
+      this.scene.start("VictoryScene", {
         score: this.points,
         points: this.points,
         savedPeopleTotal: this.savedPeopleTotal,
+        lives: player?.vida ?? 0,
       }); 
     }
   }

@@ -57,6 +57,7 @@ export default class NivelBase extends Phaser.Scene {
     const waterLayer = map.createLayer("Agua", tileset, 0, 0).setDepth(0);
     const lavalayer = map.createLayer("Lava", tileset, 0, 0).setDepth(0);
     this.waterLayer = waterLayer;
+    this.lavaLayer = lavalayer;
     const platformLayer = map.createLayer("Paredes", tileset, 0, 0).setDepth(2);
     const objectsLayer = map.getObjectLayer("Objetos");
 
@@ -81,7 +82,12 @@ export default class NivelBase extends Phaser.Scene {
         this.updateHud();
 
         if (this.timeRemaining === 0) {
-          this.scene.restart();
+          this.scene.start("GameOverScene", {
+            score: this.points,
+            points: this.points,
+            savedPeopleTotal: this.savedPeopleTotal,
+            currentLevel: this.sys.settings.key,
+          });
         }
       },
       loop: true,
@@ -171,12 +177,9 @@ export default class NivelBase extends Phaser.Scene {
   }
 
   update() {
-
-      if (this.check == 3) {
+    if (this.check == 3) {
       this.scene.restart();
-
     }
-
 
     if (Phaser.Input.Keyboard.JustDown(this.keyR)) {
       console.log("Reiniciando o acción R...");
@@ -189,6 +192,10 @@ export default class NivelBase extends Phaser.Scene {
     this.checkNpcsInWater(this.NPC1);
     this.checkNpcsInWater(this.NPC2);
     this.checkNpcsInWater(this.NPC3);
+    this.checkNpcsInLava(this.NPC1);
+    this.checkNpcsInLava(this.NPC2);
+    this.checkNpcsInLava(this.NPC3);
+    this.checkPlayerInLava();
   }
 
   setupPushableNpc(npc) {
@@ -281,6 +288,7 @@ export default class NivelBase extends Phaser.Scene {
         score: this.points,
         points: this.points,
         savedPeopleTotal: this.savedPeopleTotal,
+        currentLevel: this.sys.settings.key,
       });
       return;
     }
@@ -305,6 +313,7 @@ export default class NivelBase extends Phaser.Scene {
         score: this.points,
         points: this.points,
         savedPeopleTotal: this.savedPeopleTotal,
+        currentLevel: this.sys.settings.key,
       });
     }
   }
@@ -368,6 +377,7 @@ export default class NivelBase extends Phaser.Scene {
         score: this.points,
         points: this.points,
         savedPeopleTotal: this.savedPeopleTotal,
+        lives: this.player?.vida ?? 0,
       });
     }
   }
@@ -383,6 +393,29 @@ export default class NivelBase extends Phaser.Scene {
         this.npcEnterWater(npc);
       }
     });
+  }
+
+  checkNpcsInLava(group) {
+    if (!group || !this.lavaLayer) return;
+    group.getChildren().forEach((npc) => {
+      if (!npc || !npc.body || npc.inWater) return;
+      const x = npc.body.center.x;
+      const y = npc.body.center.y;
+      const tile = this.lavaLayer.getTileAtWorldXY(x, y);
+      if (tile) {
+        this.npcEnterLava(npc, tile);
+      }
+    });
+  }
+
+  checkPlayerInLava() {
+    if (!this.player || !this.player.body || !this.lavaLayer) return;
+    const x = this.player.body.center.x;
+    const y = this.player.body.center.y;
+    const tile = this.lavaLayer.getTileAtWorldXY(x, y);
+    if (tile) {
+      this.hitLava(this.player, tile);
+    }
   }
 
   spawnNpcAlert() {
@@ -467,6 +500,7 @@ export default class NivelBase extends Phaser.Scene {
         score: this.points,
         points: this.points,
         savedPeopleTotal: this.savedPeopleTotal,
+        currentLevel: this.sys.settings.key,
       });
       return;
     }
